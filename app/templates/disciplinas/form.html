@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if disciplina %}Editar Disciplina{% else %}Cadastrar Disciplina{% endif %} - Gestão Acadêmica{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+                <h3 class="fw-bold">
+                    <i class="fa-solid {% if disciplina %}fa-pen{% else %}fa-plus{% endif %} text-warning me-2"></i>
+                    {% if disciplina %}Editar Disciplina{% else %}Cadastrar Disciplina{% endif %}
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="codigo" class="form-label">Código da Disciplina</label>
+                        <input type="text" class="form-control" id="codigo" name="codigo" value="{{ disciplina.codigo if disciplina else '' }}" required placeholder="Ex: MAT101">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome da Disciplina</label>
+                        <input type="text" class="form-control" id="nome" name="nome" value="{{ disciplina.nome if disciplina else '' }}" required placeholder="Ex: Cálculo Diferencial e Integral I">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="professor_id" class="form-label">Professor Responsável</label>
+                        <select class="form-select" id="professor_id" name="professor_id">
+                            <option value="">-- Selecione um Professor (Opcional) --</option>
+                            {% for prof in professores %}
+                                <option value="{{ prof.id }}" {% if disciplina and disciplina.professor_id == prof.id %}selected{% endif %}>
+                                    {{ prof.nome }} ({{ prof.departamento }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a href="{{ url_for('disciplinas.index') }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-warning text-dark">
+                            <i class="fa-solid fa-save me-1"></i> Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

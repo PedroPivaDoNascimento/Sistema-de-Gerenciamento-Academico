@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Notas - Gestão Acadêmica{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fa-solid fa-file-signature me-2 text-info"></i>Notas e Avaliações</h2>
+    <a href="{{ url_for('notas.novo') }}" class="btn btn-info text-white">
+        <i class="fa-solid fa-plus me-1"></i> Lançar Nota
+    </a>
+</div>
+
+<div class="card bg-white border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('notas.index') }}" class="row g-3 align-items-center">
+            <div class="col-md-8">
+                <label for="aluno_id" class="form-label me-2 fw-bold">Filtrar por Aluno:</label>
+                <select name="aluno_id" id="aluno_id" class="form-select d-inline-block">
+                    <option value="">-- Todos os Alunos --</option>
+                    {% for a in alunos %}
+                        <option value="{{ a.id }}" {% if aluno_selecionado and aluno_selecionado.id == a.id %}selected{% endif %}>
+                            {{ a.nome }} ({{ a.matricula }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2 align-items-end">
+                <button type="submit" class="btn btn-secondary w-100">
+                    <i class="fa-solid fa-filter me-1"></i> Filtrar
+                </button>
+                {% if aluno_selecionado %}
+                    <a href="{{ url_for('notas.index') }}" class="btn btn-outline-secondary">Limpar</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if aluno_selecionado %}
+<div class="alert alert-info d-flex justify-content-between align-items-center">
+    <div>
+        <strong>Exibindo notas de:</strong> {{ aluno_selecionado.nome }} (Matrícula: {{ aluno_selecionado.matricula }})
+    </div>
+</div>
+{% endif %}
+
+<div class="card bg-white border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Aluno</th>
+                        <th>Disciplina</th>
+                        <th>Valor da Nota</th>
+                        <th>Data de Lançamento</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nota in notas %}
+                    <tr>
+                        <td>{{ nota.id }}</td>
+                        <td class="fw-bold">{{ nota.aluno.nome }} ({{ nota.aluno.matricula }})</td>
+                        <td>{{ nota.disciplina.nome }} ({{ nota.disciplina.codigo }})</td>
+                        <td>
+                            <span class="badge {% if nota.valor >= 7.0 %}bg-success{% elif nota.valor >= 5.0 %}bg-warning text-dark{% else %}bg-danger{% endif %} fs-6">
+                                {{ "%.1f"|format(nota.valor) }}
+                            </span>
+                        </td>
+                        <td>{{ nota.data_lancamento.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="text-end">
+                            <a href="{{ url_for('notas.editar', nota_id=nota.id) }}" class="btn btn-sm btn-outline-warning me-1" title="Editar Nota">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <form action="{{ url_for('notas.excluir', nota_id=nota.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este lançamento de nota?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">Nenhuma nota encontrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

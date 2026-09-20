@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Professores - Gestão Acadêmica{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fa-solid fa-chalkboard-user me-2 text-success"></i>Professores</h2>
+    <a href="{{ url_for('professores.novo') }}" class="btn btn-success">
+        <i class="fa-solid fa-plus me-1"></i> Cadastrar Professor
+    </a>
+</div>
+
+<div class="card bg-white border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Departamento</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for professor in professores %}
+                    <tr>
+                        <td>{{ professor.id }}</td>
+                        <td class="fw-bold">{{ professor.nome }}</td>
+                        <td>{{ professor.email }}</td>
+                        <td><span class="badge bg-info text-dark">{{ professor.departamento }}</span></td>
+                        <td class="text-end">
+                            <a href="{{ url_for('professores.editar', professor_id=professor.id) }}" class="btn btn-sm btn-outline-warning me-1" title="Editar">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <form action="{{ url_for('professores.excluir', professor_id=professor.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este professor?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">Nenhum professor cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

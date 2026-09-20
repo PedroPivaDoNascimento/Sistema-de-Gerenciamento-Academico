@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Gestão Acadêmica{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="fw-bold"><i class="fa-solid fa-chart-line me-2 text-primary"></i>Painel Principal</h2>
+        <p class="text-muted">Visão geral e atalhos de gerenciamento do sistema acadêmico.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card card-stat bg-white p-3 text-center border-start border-primary border-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase text-muted fw-bold">Alunos</h6>
+                    <h2 class="mb-0 fw-bold text-primary">{{ total_alunos }}</h2>
+                </div>
+                <div class="p-3 bg-light text-primary rounded-circle">
+                    <i class="fa-solid fa-user-graduate fa-2x"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('alunos.index') }}" class="btn btn-sm btn-outline-primary mt-3 w-100">Gerenciar Alunos</a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card card-stat bg-white p-3 text-center border-start border-success border-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase text-muted fw-bold">Professores</h6>
+                    <h2 class="mb-0 fw-bold text-success">{{ total_professores }}</h2>
+                </div>
+                <div class="p-3 bg-light text-success rounded-circle">
+                    <i class="fa-solid fa-chalkboard-user fa-2x"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('professores.index') }}" class="btn btn-sm btn-outline-success mt-3 w-100">Gerenciar Professores</a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card card-stat bg-white p-3 text-center border-start border-warning border-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase text-muted fw-bold">Disciplinas</h6>
+                    <h2 class="mb-0 fw-bold text-warning">{{ total_disciplinas }}</h2>
+                </div>
+                <div class="p-3 bg-light text-warning rounded-circle">
+                    <i class="fa-solid fa-book fa-2x"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('disciplinas.index') }}" class="btn btn-sm btn-outline-warning mt-3 w-100">Gerenciar Disciplinas</a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card card-stat bg-white p-3 text-center border-start border-info border-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase text-muted fw-bold">Notas Lançadas</h6>
+                    <h2 class="mb-0 fw-bold text-info">{{ total_notas }}</h2>
+                </div>
+                <div class="p-3 bg-light text-info rounded-circle">
+                    <i class="fa-solid fa-file-signature fa-2x"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('notas.index') }}" class="btn btn-sm btn-outline-info mt-3 w-100">Consultar Notas</a>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-white border-0 shadow-sm">
+    <div class="card-header bg-white border-0 pt-3">
+        <h5 class="fw-bold"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>Últimas Notas Lançadas</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Disciplina</th>
+                        <th>Nota</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nota in ultimas_notas %}
+                    <tr>
+                        <td>{{ nota.aluno.nome }} ({{ nota.aluno.matricula }})</td>
+                        <td>{{ nota.disciplina.nome }} ({{ nota.disciplina.codigo }})</td>
+                        <td>
+                            <span class="badge {% if nota.valor >= 7.0 %}bg-success{% elif nota.valor >= 5.0 %}bg-warning text-dark{% else %}bg-danger{% endif %} fs-6">
+                                {{ "%.1f"|format(nota.valor) }}
+                            </span>
+                        </td>
+                        <td>{{ nota.data_lancamento.strftime('%d/%m/%Y %H:%M') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-3 text-muted">Nenhuma nota registrada até o momento.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
